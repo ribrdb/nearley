@@ -39,10 +39,18 @@ var opts = nomnom
             "Interpolates the tokens %output% and %export% to the generated " +
             " parser and the export variable name, respectively."
     })
+    .option('output_wrapper_file', {
+        help: "If specified, read the output_wrapper from this file. " +
+            "(use this if you need multiple lines in your wrapper)."
+    })
     .parse();
 
 var input = opts.file ? fs.createReadStream(opts.file) : process.stdin;
 var output = opts.out ? fs.createWriteStream(opts.out) : process.stdout;
+
+if (opts.output_wrapper_file) {
+    opts.output_wrapper = fs.readFileSync(opts.output_wrapper_file);
+}
 
 var parserGrammar = require('../lib/nearley-language-bootstrapped.js');
 var parser = new nearley.Parser(parserGrammar.ParserRules, parserGrammar.ParserStart);
