@@ -34,6 +34,11 @@ var opts = nomnom
             return require('../package.json').version;
         }
     })
+    .option('output_wrapper', {
+        help: "Customize the parser output. " +
+            "Interpolates the tokens %output% and %export% to the generated " +
+            " parser and the export variable name, respectively."
+    })
     .parse();
 
 var input = opts.file ? fs.createReadStream(opts.file) : process.stdin;
@@ -49,5 +54,5 @@ input
     .on('finish', function() {
         var c = Compile(parser.results[0], opts);
         lint(c, {'out': process.stderr});
-        output.write(generate(c, opts.export));
+        output.write(generate(c, opts.export, opts.output_wrapper));
     });
